@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-08-25
+ * Time: 12:45
+ */
 declare(strict_types = 1);
 
 namespace Vinnia\Shipping;
@@ -58,7 +64,8 @@ class ExportDeclaration
         float $value,
         string $currency,
         Amount $weight
-    ) {
+    )
+    {
         $this->description = $description;
         $this->originCountryCode = $originCountryCode;
         $this->quantity = $quantity;
@@ -66,4 +73,5 @@ class ExportDeclaration
         $this->currency = $currency;
         $this->weight = $weight;
     }
+
 }

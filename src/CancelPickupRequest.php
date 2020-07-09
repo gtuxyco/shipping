@@ -1,6 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Bro
+ * Date: 10.09.2018
+ * Time: 10:12
+ */
 
 namespace Vinnia\Shipping;
+
 
 /**
  * Class CancelPickupRequest
@@ -55,7 +62,8 @@ class CancelPickupRequest
         Address $pickupAddress,
         \DateTimeImmutable $date,
         string $locationCode = ''
-    ) {
+    )
+    {
         $this->id = $id;
         $this->service = $service;
         $this->requestorAddress = $requestorAddress;

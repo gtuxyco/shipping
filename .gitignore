@@ -19,6 +19,3 @@ Thumbs.db
 /credentials.php
 tests/labels/*.pdf
 .phpunit*
-
-.php_cs.cache
-.php_cs

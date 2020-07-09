@@ -1,4 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-06-22
+ * Time: 23:04
+ */
 
 namespace Vinnia\Shipping;
 
@@ -7,6 +13,7 @@ use DateTimeInterface;
 
 class QuoteRequest
 {
+
     const PAYMENT_TYPE_SENDER = 'sender';
     const PAYMENT_TYPE_RECIPIENT = 'recipient';
 

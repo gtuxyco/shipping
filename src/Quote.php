@@ -1,8 +1,15 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-03-03
+ * Time: 17:22
+ */
 declare(strict_types = 1);
 
 namespace Vinnia\Shipping;
 
+use Money\Money;
 use JsonSerializable;
 
 class Quote implements JsonSerializable
@@ -19,7 +26,7 @@ class Quote implements JsonSerializable
     public $service;
 
     /**
-     * @var Array
+     * @var Money
      */
     public $price;
 
@@ -27,11 +34,9 @@ class Quote implements JsonSerializable
      * Quote constructor.
      * @param string $vendor
      * @param string $service
-     * @param Array $price
+     * @param Money $price
      */
-
-    function __construct(string $vendor, string $service, Array $price)
-
+    function __construct(string $vendor, string $service, Money $price)
     {
         $this->vendor = $vendor;
         $this->service = $service;
@@ -57,4 +62,5 @@ class Quote implements JsonSerializable
     {
         return $this->toArray();
     }
+
 }

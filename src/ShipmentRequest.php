@@ -1,4 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-05-23
+ * Time: 14:23
+ */
 
 namespace Vinnia\Shipping;
 
@@ -42,10 +48,11 @@ class ShipmentRequest extends QuoteRequest
      * @param Address $recipient
      * @param Parcel[] $parcels
      */
-    public function __construct(string $service, Address $sender, Address $recipient, array $parcels)
+    function __construct(string $service, Address $sender, Address $recipient, array $parcels)
     {
         $this->service = $service;
 
         parent::__construct($sender, $recipient, $parcels);
     }
+
 }

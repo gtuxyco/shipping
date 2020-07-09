@@ -1,6 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-06-28
+ * Time: 00:01
+ */
 
 namespace Vinnia\Shipping\Tests;
+
 
 use PHPUnit\Framework\TestCase;
 use Vinnia\Shipping\Parcel;
@@ -9,6 +16,7 @@ use Vinnia\Util\Measurement\Unit;
 
 class ParcelTest extends TestCase
 {
+
     public function testGetVolume()
     {
         $parcel = new Parcel(
@@ -32,4 +40,5 @@ class ParcelTest extends TestCase
         $volume = $parcel->getVolume();
         $this->assertEquals(0.3, $volume);
     }
+
 }

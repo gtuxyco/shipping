@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-03-07
+ * Time: 18:06
+ */
 declare(strict_types = 1);
 
 namespace Vinnia\Shipping;
@@ -42,7 +48,7 @@ class Tracking implements JsonSerializable
      * @param string $service
      * @param TrackingActivity[] $activities
      */
-    public function __construct(string $vendor, string $service, array $activities)
+    function __construct(string $vendor, string $service, array $activities)
     {
         $this->vendor = $vendor;
         $this->service = $service;
@@ -69,4 +75,5 @@ class Tracking implements JsonSerializable
     {
         return $this->toArray();
     }
+
 }

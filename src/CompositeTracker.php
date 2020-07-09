@@ -1,7 +1,14 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: johan
+ * Date: 2017-08-17
+ * Time: 21:22
+ */
 declare(strict_types = 1);
 
 namespace Vinnia\Shipping;
+
 
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -17,7 +24,7 @@ class CompositeTracker
      * CompositeTracker constructor.
      * @param ServiceInterface[] $services
      */
-    public function __construct(array $services)
+    function __construct(array $services)
     {
         $this->services = $services;
     }
@@ -68,4 +75,5 @@ class CompositeTracker
             return $results;
         });
     }
+
 }
