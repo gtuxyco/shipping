@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: johan
- * Date: 2017-03-01
- * Time: 14:36
- */
 declare(strict_types = 1);
 
 namespace Vinnia\Shipping\UPS;
@@ -16,8 +10,6 @@ use function GuzzleHttp\Promise\promise_for;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\RejectedPromise;
 use LogicException;
-use Money\Currency;
-use Money\Money;
 use Psr\Http\Message\ResponseInterface;
 use Vinnia\Shipping\Address;
 use Vinnia\Shipping\CancelPickupRequest;
@@ -39,7 +31,6 @@ use Vinnia\Util\Text\Xml;
 
 class Service implements ServiceInterface
 {
-
     const URL_TEST = 'https://wwwcie.ups.com/rest';
     const URL_PRODUCTION = 'https://onlinetools.ups.com/rest';
     const NON_SI_COUNTRIES = ['US'];
@@ -70,13 +61,12 @@ class Service implements ServiceInterface
      * @param Credentials $credentials
      * @param string $baseUrl
      */
-    function __construct(
+    public function __construct(
         ClientInterface $guzzle,
         Credentials $credentials,
         string $baseUrl = self::URL_PRODUCTION,
         ?ErrorFormatterInterface $responseFormatter = null
-    )
-    {
+    ) {
         $this->guzzle = $guzzle;
         $this->credentials = $credentials;
         $this->baseUrl = $baseUrl;
@@ -204,12 +194,13 @@ class Service implements ServiceInterface
 
             return array_map(function (array $shipment): Quote {
                 $charges = ($this->credentials->getShipperNumber()) ? $shipment['NegotiatedRateCharges']['TotalCharge'] : $shipment['TotalCharges'];
-                $amount = (int) round(((float) $charges['MonetaryValue']) * pow(10, 2));
+                $amount = (float) $charges['MonetaryValue'];
+
 
                 return new Quote(
                     'UPS',
                     (string) Arrays::get($shipment, 'Service.Code'),
-                    new Money($amount, new Currency($charges['CurrencyCode']))
+                    Array('amount'=> $amount, 'currency' => $charges['CurrencyCode'])
                 );
             }, $shipments);
         });
