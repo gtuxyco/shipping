@@ -196,6 +196,7 @@ class Service implements ServiceInterface
                 $charges = ($this->credentials->getShipperNumber()) ? $shipment['NegotiatedRateCharges']['TotalCharge'] : $shipment['TotalCharges'];
                 $amount = (float) $charges['MonetaryValue'];
 
+
                 return new Quote(
                     'UPS',
                     (string) Arrays::get($shipment, 'Service.Code'),
