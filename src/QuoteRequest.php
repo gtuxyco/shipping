@@ -43,7 +43,7 @@ class QuoteRequest
     /**
      * @var float
      */
-    public $value = 0.0;
+    public $value = 100.00;
 
     /**
      * @var string
@@ -58,7 +58,7 @@ class QuoteRequest
     /**
      * @var string
      */
-    public $currency = 'EUR';
+    public $currency = 'COP';
 
     /**
      * @var bool

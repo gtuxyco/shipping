@@ -205,7 +205,7 @@ EOD;
 
                 // the amount is a decimal string, deal with that
                 $amount = (float) $amountString;
-                $product = (string) $element['GlobalProductCode'];
+                $product = ['code'=> (string) $element['GlobalProductCode'], 'name' => (string) $element['ProductShortName'], 'delivery' => (string) str_replace("-", "", $element['DeliveryDate']), 'TotalTransitDays' => (string) $element['TotalTransitDays'] ];
 
                 // 2019-08-27: it seems DHL sometimes decides to not
                 // return a currency code. weird, huh.

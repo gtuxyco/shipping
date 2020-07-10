@@ -20,7 +20,7 @@ class Quote implements JsonSerializable
     public $vendor;
 
     /**
-     * @var string
+     * @var Array
      */
     public $service;
 
@@ -35,7 +35,7 @@ class Quote implements JsonSerializable
      * @param string $service
      * @param Array $price
      */
-    function __construct(string $vendor, string $service, Array $price)
+    function __construct(string $vendor, Array $service, Array $price)
     {
         $this->vendor = $vendor;
         $this->service = $service;

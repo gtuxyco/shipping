@@ -103,7 +103,7 @@ class Service implements ServiceInterface
                 $nonSi ? Unit::POUND : Unit::KILOGRAM
             );
         }, $request->parcels);
-
+        $total_package_weight = 0;
         $body = [
             'UPSSecurity' => [
                 'UsernameToken' => [
@@ -116,7 +116,7 @@ class Service implements ServiceInterface
             ],
             'RateRequest' => [
                 'Request' => [
-                    'RequestOption' => 'Shop',
+                    'RequestOption' => 'Shoptimeintransit',
                     //'TransactionReference' => [
                     //    'CustomerContext' => '',
                     //],
@@ -153,7 +153,8 @@ class Service implements ServiceInterface
                             'CountryCode' => $sender->countryCode,
                         ],
                     ],
-                    'Package' => array_map(function (Parcel $parcel) use ($lengthUnit, $weightUnit): array {
+                    'Package' => array_map(function (Parcel $parcel) use ($lengthUnit, $weightUnit, &$total_package_weight): array {
+                        $total_package_weight += $parcel->weight->getValue();
                         return [
                             'PackagingType' => [
                                 'Code' => '02',
@@ -174,6 +175,21 @@ class Service implements ServiceInterface
                             ],
                         ];
                     }, $parcels),
+                    'DeliveryTimeInformation' => [
+                        'PackageBillType'=> '03'
+                    ],
+                    'ShipmentTotalWeight' => [
+                        'UnitOfMeasurement' => [
+                            'Code' => $weightUnit,
+                        ],
+                        'Weight' => (string)$total_package_weight,
+
+                    ],
+                    'InvoiceLineTotal'=> [
+                        'CurrencyCode' => $request->currency,
+                        'MonetaryValue' => number_format($request->value, 2, '.', '')
+                    ],
+
                 ],
             ],
         ];
@@ -192,21 +208,21 @@ class Service implements ServiceInterface
             if (Arrays::get($body, 'RateResponse.RatedShipment') === null) {
                 return new RejectedPromise($body);
             }
-
+            
             $shipments = $body['RateResponse']['RatedShipment'];
 
             // sometimes UPS likes to return a single rate response.
             // this causes the json to appear as an object instead
             // of an array.
             $shipments = Arrays::isNumericKeyArray($shipments) ? $shipments : [$shipments];
-
+            
             return array_map(function (array $shipment): Quote {
                 $charges = ($this->credentials->getShipperNumber()) ? $shipment['NegotiatedRateCharges']['TotalCharge'] : $shipment['TotalCharges'];
                 $amount = (float) $charges['MonetaryValue'];
 
                 return new Quote(
                     'UPS',
-                    (string) Arrays::get($shipment, 'Service.Code'),
+                    ['code'=> (string) Arrays::get($shipment, 'Service.Code'), 'name' => (string) Arrays::get($shipment, 'TimeInTransit.ServiceSummary.Service.Description'), 'delivery' => (string) Arrays::get($shipment, 'TimeInTransit.ServiceSummary.EstimatedArrival.Arrival.Date'), 'TotalTransitDays' => (string) Arrays::get($shipment, 'TimeInTransit.ServiceSummary.EstimatedArrival.TotalTransitDays') ],
                     Array('amount'=> $amount, 'currency' => $charges['CurrencyCode'])
                 );
             }, $shipments);
