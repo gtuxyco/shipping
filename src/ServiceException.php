@@ -23,15 +23,21 @@ class ServiceException extends Exception
      */
     public $source;
 
+      /**
+     * @var string
+     */
+    public $vendor;
     /**
      * ErrorBag constructor.
      * @param string[] $errors
      * @param string $source
+     * @param string $vendor
      */
-    function __construct(array $errors, string $source)
+    function __construct(string $vendor, array $errors, string $source)
     {
         parent::__construct(implode("\n", $errors));
 
+        $this->vendor = $vendor;
         $this->errors = $errors;
         $this->source = $source;
     }

@@ -210,7 +210,7 @@ class Service implements ServiceInterface
             if (!isset($body['RateResponse']['RatedShipment'])) {
                 return $this->throwError($todecode);
             }
-            
+
             $shipments = $body['RateResponse']['RatedShipment'];
 
             // sometimes UPS likes to return a single rate response.
@@ -368,7 +368,7 @@ class Service implements ServiceInterface
     protected function throwError(string $body)
     {
         $errors = $this->getErrors($body);
-        throw new ServiceException($errors, $body);
+        throw new ServiceException('UPS', $errors, $body);
     }
 
     /**

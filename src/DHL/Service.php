@@ -634,7 +634,7 @@ EOD;
     protected function throwError(string $body)
     {
         $errors = $this->getErrors($body);
-        throw new ServiceException($errors, $body);
+        throw new ServiceException('DHL', $errors, $body);
     }
 
     /**
