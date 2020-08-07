@@ -24,6 +24,7 @@ use Vinnia\Shipping\PickupRequest;
 use Vinnia\Shipping\Quote;
 use Vinnia\Shipping\QuoteRequest;
 use Vinnia\Shipping\ErrorFormatterInterface;
+use Vinnia\Shipping\ServiceException;
 use Vinnia\Shipping\ServiceInterface;
 use Vinnia\Shipping\ShipmentRequest;
 use Vinnia\Shipping\ExactErrorFormatter;
@@ -203,10 +204,11 @@ class Service implements ServiceInterface
             ],
             'json' => $body,
         ])->then(function (ResponseInterface $response) {
-            $body = json_decode((string) $response->getBody(), true);
-
-            if (Arrays::get($body, 'RateResponse.RatedShipment') === null) {
-                return new RejectedPromise($body);
+            $todecode = (string) $response->getBody();
+            $body = json_decode($todecode, true);
+            
+            if (!isset($body['RateResponse']['RatedShipment'])) {
+                return $this->throwError($todecode);
             }
             
             $shipments = $body['RateResponse']['RatedShipment'];
@@ -356,6 +358,39 @@ class Service implements ServiceInterface
                 return TrackingActivity::STATUS_EXCEPTION;
         }
         return TrackingActivity::STATUS_IN_TRANSIT;
+    }
+
+
+    /**
+     * @param string $body
+     * @throws ServiceException
+     */
+    protected function throwError(string $body)
+    {
+        $errors = $this->getErrors($body);
+        throw new ServiceException($errors, $body);
+    }
+
+    /**
+     * @param string $body
+     * @return string[]
+     */
+    protected function getErrors(string $body): array
+    {
+        $arrayed = json_decode($body, true);
+
+        $conditions = Arrays::get($arrayed, 'Fault.detail.Errors');
+
+        if (!$conditions) {
+            return [];
+        }
+
+        return array_map(function (array $item) {
+            $message = Arrays::get($item, 'ErrorDetail.PrimaryErrorCode.Description');
+            $message = preg_replace('/\s+/', ' ', $message);
+            $message = $this->errorFormatter->format($message);
+            return $message;
+        }, Arrays::isNumericKeyArray($conditions) ? $conditions : [$conditions]);
     }
 
     /**

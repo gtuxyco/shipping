@@ -647,7 +647,7 @@ EOD;
         $xml->loadXML($body, LIBXML_PARSEHUGE);
 
         $arrayed = Xml::toArray($xml);
-        $conditions = Arrays::get($arrayed, 'Response.Status.Condition');
+        $conditions = Arrays::get($arrayed, 'GetQuoteResponse.Note.Condition');
 
         if (!$conditions) {
             return [];
